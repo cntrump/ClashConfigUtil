@@ -1,0 +1,195 @@
+#!/usr/bin/env ruby
+#coding=utf-8
+
+require 'yaml'
+require 'net/http'
+
+class ClashConfiguration
+    attr_accessor :basic, :proxies, :rules
+
+    def initialize
+        @basic = defaultBasic
+        @proxies = []
+        @rules = defaultRules
+    end
+
+    private
+    def defaultBasic
+        return {
+            'mixed-port' => 7890,
+            'allow-lan' => false,
+            'bind-address' => '*',
+            'mode' => 'rule',
+            'log-level' => 'info',
+            'ipv6' => false,
+            'external-controller' => '127.0.0.1:9090',
+            'external-ui' => '', # dashboard
+            'secret' => '', # passwd for dashboard
+            'profile' => {
+                'store-selected' => true
+            },
+            'dns' => {
+                'enable' => true,
+                'listen' => '127.0.0.1:53',
+                'ipv6' => false,
+                'default-nameserver' => [
+                    '223.5.5.5', 
+                    '223.6.6.6'
+                ],
+                'enhanced-mode' => 'redir-host',
+                'nameserver' => [
+                    'https://dns.alidns.com/dns-query'
+                ]
+            }
+        }
+    end
+
+    private
+    def proxyGroups
+        names = []
+        if proxies
+            names = proxies.map { |proxy| proxy['name'] }
+        end
+
+        return [
+            {
+                'name' => 'PROXY',
+                'type' => 'select',
+                'proxies' => ['AUTO'].concat(names)
+            },
+            {
+                'name' => 'AUTO',
+                'type' => 'url-test',
+                'url' => 'http://www.gstatic.com/generate204',
+                'interval' => 3600,
+                'tolerance' => 30,
+                'proxies' => names
+            },
+            {
+                'name' => 'FINAL',
+                'type' => 'select',
+                'proxies' => ['PROXY', 'DIRECT', 'REJECT']
+            }
+        ]
+    end
+
+    private
+    def defaultRules
+        return [
+            'DOMAIN-SUFFIX,goog,PROXY',
+            'DOMAIN-SUFFIX,ghcr.io,PROXY',
+            'DOMAIN-KEYWORD,github,PROXY',
+            'DOMAIN-KEYWORD,google,PROXY',
+            'DOMAIN-SUFFIX,cn,DIRECT',
+            'DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT',
+            'DOMAIN-SUFFIX,apple.com,DIRECT',
+            'DOMAIN-SUFFIX,icloud.com,DIRECT',
+            'IP-CIDR,0.0.0.0/8,DIRECT,no-resolve',
+            'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve',
+            'IP-CIDR,100.64.0.0/10,DIRECT,no-resolve',
+            'IP-CIDR,127.0.0.0/8,DIRECT,no-resolve',
+            'IP-CIDR,169.254.0.0/16,DIRECT,no-resolve',
+            'IP-CIDR,172.16.0.0/12,DIRECT,no-resolve',
+            'IP-CIDR,192.0.0.0/24,DIRECT,no-resolve',
+            'IP-CIDR,192.0.2.0/24,DIRECT,no-resolve',
+            'IP-CIDR,192.88.99.0/24,DIRECT,no-resolve',
+            'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve',
+            'IP-CIDR,198.18.0.0/15,DIRECT,no-resolve',
+            'IP-CIDR,198.51.100.0/24,DIRECT,no-resolve',
+            'IP-CIDR,203.0.113.0/24,DIRECT,no-resolve',
+            'IP-CIDR,224.0.0.0/4,DIRECT,no-resolve',
+            'IP-CIDR,240.0.0.0/4,DIRECT,no-resolve',
+            'IP-CIDR,255.255.255.255/32,DIRECT,no-resolve',
+            'GEOIP,CN,DIRECT',
+            'MATCH,FINAL'
+        ]
+    end
+
+    public
+    def to_yaml
+        yamlHash = basic
+        yamlHash['proxies'] = proxies
+        yamlHash['proxy-groups'] = proxyGroups
+        yamlHash['rules'] = rules
+
+        return yamlHash.to_yaml
+    end
+end
+
+def YAMLLoadFromUrl(url)
+    uri = URI(url)
+    req = Net::HTTP::Get.new(uri)
+    req['User-Agent'] = 'ClashX/1.50.1 (com.west2online.ClashX; build:1.50.1; macOS 11.3.0) Alamofire/5.4.2'
+    res = Net::HTTP.start(uri.hostname, uri.port,
+                            :use_ssl => uri.scheme == 'https') {|http|
+        http.request(req)
+    }
+
+    if !res.is_a?(Net::HTTPSuccess)
+        return nil
+    end
+
+    return YAML::load(res.body)
+end
+
+def YAMLLoadFromFile(path)
+    begin
+        return YAML::load(File.open(path))
+    rescue
+        return nil
+    end
+end
+
+argc = ARGV.size
+if argc < 1
+    print <<-EOF
+        useage: [proxies1 proxies2 proxies3 ...]
+    EOF
+
+    exit -1
+end
+
+config = ClashConfiguration.new
+
+userBasic = YAMLLoadFromFile('basic.yaml')
+if !userBasic
+    puts 'Using default basic settings.'
+else
+    puts 'Loading basic.yaml.'
+    config.basic = userBasic
+end
+
+userRules = YAMLLoadFromFile('rules.yaml')
+if !userRules
+    puts 'Using default rules.'
+else
+    puts 'Loading rules.yaml.'
+    config.rules = userRules
+end
+
+outFile = 'config.yaml'
+
+for i in 0...argc
+    proxiesFile = ARGV[i]
+    proxiesConfig = nil
+
+    if proxiesFile.start_with?('http')
+        proxiesConfig = YAMLLoadFromUrl(proxiesFile)
+    else
+        proxiesConfig = YAMLLoadFromFile(proxiesFile)
+    end
+
+    if !proxiesConfig
+        puts "Invalid yaml file: #{proxiesFile}"
+        next
+    end
+
+    proxies = proxiesConfig['proxies']
+    if proxies
+        config.proxies.concat(proxies)
+    end
+end
+
+File.write(outFile, config.to_yaml)
+
+puts 'Clash configuration writed to config.yaml.'

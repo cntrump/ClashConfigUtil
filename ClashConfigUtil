@@ -164,7 +164,7 @@ if !userRules
     puts 'Using default rules.'
 else
     puts 'Loading rules.yaml.'
-    config.rules = userRules
+    config.rules = userRules['rules']
 end
 
 outFile = 'config.yaml'

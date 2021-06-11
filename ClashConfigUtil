@@ -76,14 +76,18 @@ class ClashConfiguration
     private
     def defaultRules
         return [
+            'DOMAIN-SUFFIX,facebook.com,PROXY',
+            'DOMAIN-SUFFIX,t.co,PROXY',
+            'DOMAIN-SUFFIX,twitter.com,PROXY',
+            'DOMAIN-SUFFIX,medium.com,PROXY',
             'DOMAIN-SUFFIX,goog,PROXY',
             'DOMAIN-SUFFIX,ghcr.io,PROXY',
             'DOMAIN-KEYWORD,github,PROXY',
             'DOMAIN-KEYWORD,google,PROXY',
-            'DOMAIN-SUFFIX,cn,DIRECT',
             'DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT',
             'DOMAIN-SUFFIX,apple.com,DIRECT',
             'DOMAIN-SUFFIX,icloud.com,DIRECT',
+            'DOMAIN-SUFFIX,cn,DIRECT',
             'IP-CIDR,0.0.0.0/8,DIRECT,no-resolve',
             'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve',
             'IP-CIDR,100.64.0.0/10,DIRECT,no-resolve',

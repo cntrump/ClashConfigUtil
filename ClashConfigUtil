@@ -90,6 +90,7 @@ class ClashConfiguration
             'DOMAIN-SUFFIX,office.com,DIRECT',
             'DOMAIN-SUFFIX,microsoft.com,DIRECT',
             'DOMAIN-SUFFIX,appcenter.ms,DIRECT',
+            'DOMAIN-SUFFIX,mzstatic.com,DIRECT',
             'DOMAIN-SUFFIX,cdn-apple.com,DIRECT',
             'DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT',
             'DOMAIN-SUFFIX,apple.com,DIRECT',

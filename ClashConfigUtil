@@ -84,6 +84,7 @@ class ClashConfiguration
             'DOMAIN-SUFFIX,ghcr.io,PROXY',
             'DOMAIN-KEYWORD,github,PROXY',
             'DOMAIN-KEYWORD,google,PROXY',
+            'DOMAIN-SUFFIX,cdn-apple.com,DIRECT',
             'DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT',
             'DOMAIN-SUFFIX,apple.com,DIRECT',
             'DOMAIN-SUFFIX,icloud.com,DIRECT',

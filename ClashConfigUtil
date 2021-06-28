@@ -76,6 +76,7 @@ class ClashConfiguration
     private
     def defaultRules
         return [
+            'DOMAIN-SUFFIX,reddit.com,PROXY',
             'DOMAIN-SUFFIX,facebook.com,PROXY',
             'DOMAIN-SUFFIX,t.co,PROXY',
             'DOMAIN-SUFFIX,twitter.com,PROXY',

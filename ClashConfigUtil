@@ -60,9 +60,9 @@ class ClashConfiguration
             {
                 'name' => 'AUTO',
                 'type' => 'url-test',
-                'url' => 'http://www.gstatic.com/generate204',
+                'url' => 'http://www.youtube.com/generate_204',
                 'interval' => 3600,
-                'tolerance' => 30,
+                'tolerance' => 10,
                 'proxies' => names
             },
             {

@@ -100,6 +100,7 @@ class ClashConfiguration
             'DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT',
             'DOMAIN-SUFFIX,apple.com,DIRECT',
             'DOMAIN-SUFFIX,icloud.com,DIRECT',
+            'DOMAIN-SUFFIX,tw,PROXY',
             'DOMAIN-SUFFIX,hk,PROXY',
             'DOMAIN-SUFFIX,cn,DIRECT',
             'IP-CIDR,0.0.0.0/8,DIRECT,no-resolve',

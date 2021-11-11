@@ -81,7 +81,7 @@ class ClashConfiguration
             'DOMAIN-SUFFIX,t.co,PROXY',
             'DOMAIN-SUFFIX,twitter.com,PROXY',
             'DOMAIN-SUFFIX,medium.com,PROXY',
-            'DOMAIN-SUFFIX,goog,PROXY',
+            'DOMAIN-SUFFIX,translate.goog,PROXY',
             'DOMAIN-SUFFIX,ghcr.io,PROXY',
             'DOMAIN-KEYWORD,github,PROXY',
             'DOMAIN-KEYWORD,google,PROXY',

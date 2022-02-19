@@ -1,0 +1,43 @@
+proxy-groups:
+-
+  name: Proxy
+  type: select
+  proxies-type: add
+  proxies:
+    - LoadBalance
+    - Auto
+-
+  name: LoadBalance
+  type: load-balance
+  url: 'http://www.gstatic.com/generate_204'
+  interval: 300
+  proxies-type: all
+-
+  name: Auto
+  type: url-test
+  url: 'http://www.gstatic.com/generate_204'
+  interval: 300
+  proxies-type: all
+-
+  name: Domestic
+  type: select
+  proxies:
+    - DIRECT
+    - Proxy
+-
+  name: AsianTV
+  type: select
+  proxies:
+    - Domestic
+    - Proxy
+-
+  name: GlobalTV
+  type: select
+  proxies:
+    - Proxy
+-
+  name: Others
+  type: select
+  proxies:
+    - Proxy
+    - Domestic

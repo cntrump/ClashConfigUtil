@@ -1,0 +1,47 @@
+# HTTP 代理端口
+port: 7090
+
+# SOCKS5 代理端口
+socks-port: 7091
+
+# Linux 和 macOS 的 redir 代理端口
+redir-port: 7892
+
+# 允许局域网的连接
+allow-lan: true
+
+# 规则模式：Rule（规则） / Global（全局代理）/ Direct（全局直连）
+mode: Rule
+
+# 设置日志输出级别 (默认级别：silent，即不输出任何内容，以避免因日志内容过大而导致程序内存溢出）。
+# 5 个级别：silent / info / warning / error / debug。级别越高日志输出量越大，越倾向于调试，若需要请自行开启。
+log-level: silent
+# Clash 的 RESTful API
+external-controller: '0.0.0.0:19090'
+
+# RESTful API 的口令
+secret: 'xxxx'
+
+# 您可以将静态网页资源（如 clash-dashboard）放置在一个目录中，clash 将会服务于 `RESTful API/ui`
+# 参数应填写配置目录的相对路径或绝对路径。
+external-ui: /root/web/clash-dashbord-yacd
+
+hosts:
+   'xxxx.xxx': 192.168.1.11
+dns:
+  enable: true # set true to enable dns (default is false)
+  ipv6: false # default is false
+  listen: 0.0.0.0:53
+  nameserver: # resolve dns nameserver host, should fill pure IP
+    - https://192.168.186.1/dns-query
+    - https://223.5.5.5/dns-query
+    - https://doh.pub/dns-query
+  fallback:
+    - https://1.1.1.1/dns-query
+    - https://1.0.0.1/dns-query
+    - https://8.8.8.8/dns-query
+  fallback-filter:
+    geoip: true                  # default
+    geoip-code: CN
+proxies-ignore-first-counts:
+  - 4

@@ -5,10 +5,11 @@ require 'yaml'
 require 'net/http'
 
 class ClashConfiguration
-    attr_accessor :basic, :proxies, :rules
+    attr_accessor :basic, :proxyGroups, :proxies, :rules
 
     def initialize
         @basic = defaultBasic
+        @proxyGroups = []
         @proxies = []
         @rules = defaultRules
     end
@@ -45,13 +46,32 @@ class ClashConfiguration
     end
 
     private
-    def proxyGroups
+    def buildProxyGroups
         names = []
         if proxies
             names = proxies.map { |proxy| proxy['name'] }
         end
-
-        return [
+        if proxyGroups.size > 0 then
+            for i in 0...proxyGroups.size
+                proxyGroup = proxyGroups[i]
+                proxiesType = proxyGroup['proxies-type']
+                
+                if !proxiesType then next end
+                    
+                if proxiesType == 'add' then
+                    if proxyGroup['proxies'].size > 0 then 
+                        proxyGroup['proxies'].concat(names) 
+                    else
+                        proxyGroup['proxies'] = names
+                    end
+                elsif proxiesType == 'all' then
+                    proxyGroup['proxies'] = names
+                end
+                proxyGroup.delete('proxies-type')
+            end
+            return proxyGroups
+        else
+            return [
             {
                 'name' => 'PROXY',
                 'type' => 'select',
@@ -70,7 +90,8 @@ class ClashConfiguration
                 'type' => 'select',
                 'proxies' => ['PROXY', 'DIRECT', 'REJECT']
             }
-        ]
+            ]
+        end
     end
 
     private
@@ -128,7 +149,7 @@ class ClashConfiguration
     def to_yaml
         yamlHash = basic
         yamlHash['proxies'] = proxies
-        yamlHash['proxy-groups'] = proxyGroups
+        yamlHash['proxy-groups'] = buildProxyGroups
         yamlHash['rules'] = rules
 
         return yamlHash.to_yaml
@@ -178,6 +199,14 @@ else
     config.basic = userBasic
 end
 
+userProxyGroups = YAMLLoadFromFile('proxyGroups.yaml')
+if !userProxyGroups
+    puts 'Using default proxyGroups settings.'
+else
+    puts 'Loading proxyGroups.yaml.'
+    config.proxyGroups = userProxyGroups['proxy-groups']
+end
+
 userRules = YAMLLoadFromFile('rules.yaml')
 if !userRules
     puts 'Using default rules.'
@@ -188,7 +217,17 @@ end
 
 outFile = 'config.yaml'
 
+proxiesIgnoreFirstCounts = config.basic['proxies-ignore-first-counts']
+config.basic.delete('proxies-ignore-first-counts')
+
+proxiesIgnorefirstCountSize = 0        
+if proxiesIgnoreFirstCounts then proxiesIgnorefirstCountSize = proxiesIgnoreFirstCounts.size end
+proxiesIgnoreFirstCount = 0
+    
 for i in 0...argc
+    
+    if proxiesIgnorefirstCountSize > i then proxiesIgnoreFirstCount = proxiesIgnoreFirstCounts[i] end
+    
     proxiesFile = ARGV[i]
     proxiesConfig = nil
 
@@ -205,7 +244,12 @@ for i in 0...argc
 
     proxies = proxiesConfig['proxies']
     if proxies
-        config.proxies.concat(proxies)
+        proxiesTemp = proxies;
+        if proxiesIgnoreFirstCount > 0 then 
+            puts "忽略第#{i+1}个配置的proxies的前#{proxiesIgnoreFirstCount}个节点"
+            proxiesTemp = proxiesTemp.drop(proxiesIgnoreFirstCount)
+        end
+        config.proxies.concat(proxiesTemp)
     end
 end
 

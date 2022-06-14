@@ -38,6 +38,11 @@ class ClashConfiguration
                     '223.6.6.6'
                 ],
                 'enhanced-mode' => 'fake-ip',
+                'fake-ip-filter' => [
+                    '*.lan',
+                    '*.local',
+                    'localhost.ptlogin2.qq.com'
+                ],
                 'fake-ip-range' => '198.18.0.1/16',
                 'nameserver' => [
                     '223.5.5.5',

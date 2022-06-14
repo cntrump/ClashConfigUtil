@@ -34,12 +34,14 @@ class ClashConfiguration
                 'listen' => '0.0.0.0:53',
                 'ipv6' => false,
                 'default-nameserver' => [
-                    '223.5.5.5', 
+                    '223.5.5.5',
                     '223.6.6.6'
                 ],
-                'enhanced-mode' => 'redir-host',
+                'enhanced-mode' => 'fake-ip',
+                'fake-ip-range' => '198.18.0.1/16',
                 'nameserver' => [
-                    'https://223.5.5.5/dns-query'
+                    '223.5.5.5',
+                    '223.6.6.6'
                 ]
             }
         }

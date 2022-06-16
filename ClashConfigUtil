@@ -22,7 +22,7 @@ class ClashConfiguration
             'bind-address' => '*',
             'mode' => 'rule',
             'log-level' => 'info',
-            'ipv6' => true,
+            'ipv6' => false,
             'external-controller' => '127.0.0.1:9090',
             'external-ui' => '', # dashboard
             'secret' => '', # passwd for dashboard

@@ -117,7 +117,7 @@ class ClashConfiguration
             'DOMAIN-SUFFIX,accounts.firefox.com,DIRECT',
             'DOMAIN-SUFFIX,amazonaws.com,DIRECT',
             'DOMAIN-SUFFIX,outlook.com,DIRECT',
-            'DOMAIN-SUFFIX,live.com,DIRECT',
+            'DOMAIN-SUFFIX,live.com,PROXY',
             'DOMAIN-SUFFIX,office365.com,DIRECT',
             'DOMAIN-SUFFIX,office.com,DIRECT',
             'DOMAIN-SUFFIX,microsoft.com,DIRECT',

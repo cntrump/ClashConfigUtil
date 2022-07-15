@@ -127,6 +127,7 @@ class ClashConfiguration
             'DOMAIN-SUFFIX,icloud-content.com,DIRECT',
             'DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT',
             'DOMAIN-SUFFIX,apple.com,DIRECT',
+            'DOMAIN-SUFFIX,itunes.com,DIRECT',
             'DOMAIN-SUFFIX,icloud.com,DIRECT',
             'DOMAIN-SUFFIX,tw,PROXY',
             'DOMAIN-SUFFIX,hk,PROXY',

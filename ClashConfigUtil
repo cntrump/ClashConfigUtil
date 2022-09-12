@@ -27,7 +27,8 @@ class ClashConfiguration
             'external-ui' => '', # dashboard
             'secret' => '', # passwd for dashboard
             'profile' => {
-                'store-selected' => true
+                'store-selected' => true,
+                'store-fake-ip' => true
             },
             'dns' => {
                 'enable' => true,
